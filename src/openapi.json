@@ -1,0 +1,291 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Assignment 2 Basic User API in Express",
+    "description": "This is a basic user API it allows you create, retrieve update and delete users from an in memmory array written in node / express",
+    "contact": {
+      "email": "jose.gomez@unf.edu"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:3000/"
+    },
+    {
+      "url": "http://localhost:3000/"
+    }
+  ],
+  "paths": {
+    "/Users": {
+      "get": {
+        "description": "Returns a list of users that are currently in the in memmory array",
+        "responses": {
+          "200": {
+            "description": "Array of Users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResponseUser"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "User Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUser"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "All properties are required in the user object (userId, firstName, lastName, emailAddress, password)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "default": "All properties are required for a new user userId,firstName,lastName,emailAddress, password"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "default": 406
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict userId already in use",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "default": "Userid already in use"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "default": 409
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Users/{userId}": {
+      "get": {
+        "description": "Returns the specified user object",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "userId of the user object you are trying to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the User object with the matching userId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUser"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "default": "User not found"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "default": 404
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Updates an existing user",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "userId of the user object you are trying to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Any properties of the user object that should be updated.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUser"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "default": "User not found"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "default": 404
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Returns the specified user object",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "userId of the user object you are trying to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted"
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "default": "User not found"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "default": 404
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ResponseUser": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "emailAddress": {
+            "type": "string"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "emailAddress": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
